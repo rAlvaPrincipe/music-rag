@@ -85,9 +85,14 @@ def sanitize_title(title):
 
 
 
-
-if not os.path.exists(output_dir):
+def main():
+    if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-category = "Category:Musical groups by genre"#"Category:English alternative rock groups" #"Category:Musical groups by genre"
-process_category(category)
+    category = "Category:Musical groups by genre"#"Category:English alternative rock groups" #"Category:Musical groups by genre"
+    process_category(category)
+
+
+if __name__ == "__main__":
+    main()
+
