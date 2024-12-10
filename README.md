@@ -1,4 +1,4 @@
-# 🎵 Music-RAG: Answering Music Questions with LLMs  
+# 🎵 Music-RAG: Music Q&A with LLMs  
 
 Music-RAG is a **Retrieval-Augmented Generation (RAG)** system leveraging the power of **Large Language Models (LLMs)** to answer music-related questions.  
 Ever wondered:  
@@ -26,7 +26,7 @@ $ pip3 install -r requirements.txt # Install dependencies
 Set up ElasticsSearch and Kibana containers. The Kibana GUI is optional:
 
 ```bash
-% docker-compose up 
+$ docker-compose up 
 ```
 
 ##  Fetch Documents from Wikipedia
