@@ -1,6 +1,8 @@
 from elasticsearch import Elasticsearch
 from datetime import datetime
 from pprint import pprint
+
+
 class ES:
     
     def __init__(self):
@@ -33,3 +35,67 @@ class ES:
         doc["embedding"] = embedding
         resp = self.es.index(index=self.INDEX, document=doc)
     
+    
+    
+    
+    def get_rag_contex_only_embeddings(self, question_vector):
+        query = {
+            "knn": {
+            "field": "embedding",
+            "inner_hits": {
+                "_source": False,
+                "fields": ["text"]
+            },
+            "query_vector": question_vector,
+            "k": 5,
+            }
+        }
+
+        resp = self.es.search(index="wiki_chunks", body=query)
+    
+    
+    
+    def get_rag_contex(self, question_vector):
+        fields = ["source_title", "text"]
+
+        es_query = {
+            "size": 15,
+            "knn": {  # k-NN is a top-level query
+                "field": "embedding",
+                "query_vector": question_vector,
+                "k": 15,
+                "num_candidates": 200
+            },
+            "query": {  # Add boosting with a bool query
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "text": {
+                                    "query": "Pink Floyd",
+                                    "fuzziness": "AUTO",
+                                    "boost": 1.3
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        
+
+        results = self.es.search(index=self.INDEX, body=es_query, _source_includes=fields)
+        results = results["hits"]["hits"]  
+        
+        outs = list()
+        for result in results:
+            out = { "score": result["_score"]}
+            for field in fields:
+                out[field] = result["_source"][field]
+            outs.append(out)
+        return outs          
+
+
+# da provare: filtra prima quelli che contengon pink floyd, su questo sottoinsieme fai la knn
+#             cerca solo nella pagina di pink floyd
