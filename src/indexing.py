@@ -28,7 +28,7 @@ def doc2chunks(doc_text):
 
 
 def main():
-    source_path = "./english_alternative_rock_groups"
+    source_path = "./data/english_alternative_rock_groups"
     docs = get_docs(source_path)
     
     vectorizer = Vectorizer("sentence-transformers/all-MiniLM-L6-v2")
