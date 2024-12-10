@@ -2,7 +2,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 import json
 from vectorizer import Vectorizer
-
+from es import ES
+from tqdm import tqdm
 
 def get_docs(source_path):
     docs = []
@@ -16,7 +17,6 @@ def get_docs(source_path):
 
 def doc2chunks(doc_text):
     text_splitter = RecursiveCharacterTextSplitter(
-        # Set a really small chunk size, just to show.
         chunk_size=500,
         chunk_overlap=50,
         length_function=len,
@@ -31,13 +31,17 @@ def main():
     source_path = "./english_alternative_rock_groups"
     docs = get_docs(source_path)
     
-    vectorizer = Vectorizer("nickprock/sentence-bert-base-italian-uncased")
-
-    for doc in docs:
-        chunks = doc2chunks(doc["text"])
-        embeddings = vectorizer.get_embeddings(chunks)
-        print(doc["title"])
-                  
+    vectorizer = Vectorizer("sentence-transformers/all-MiniLM-L6-v2")
+    es = ES()
+    
+    with tqdm(total=len(docs)) as pbar:
+        for doc in docs:
+            chunks = doc2chunks(doc["text"])
+            embeddings = vectorizer.get_embeddings(chunks)
+            for chunk, embedding in zip(chunks, embeddings):
+                es.insert(doc["page_id"], doc["title"], doc["url"], chunk, embedding)
+            
+            pbar.update(1)
 
 if __name__ == "__main__":
     main()
