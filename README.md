@@ -42,3 +42,10 @@ Index the documents into Elasticsearch for efficient retrieval:
 ```bash
 $ python ./src/indexing.py  
 ```
+
+## RAG Inference
+
+Test the RAG system:
+```bash
+$ python ./src/rag.py  
+```
