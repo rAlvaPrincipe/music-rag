@@ -33,7 +33,9 @@ template = ChatPromptTemplate([
 
 
 def main():
-    question = "Who were influenced by Pink Floyd?"
+    #question = "Who were influenced by Pink Floyd?"
+    question = "Who influenced Pink Floyd?"
+
     question_embedding = vectorizer.get_embeddings(question)
     context = es.get_rag_contex(question_embedding)
     chain = template | groq_model
