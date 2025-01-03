@@ -7,13 +7,13 @@ Ever wondered:
 - *Which band is based in Seattle?*  
 
 
-##  Requirements
+## 📄 Requirements
 -  Python (tested on 3.11)
 -  Docker
 -  Docker Compose
 
 
-##  Set Up Your Environment  
+## ⚙️ Set Up Your Environment  
 
 Run the following commands to set up a Python virtual environment:  
 
@@ -29,14 +29,14 @@ Set up ElasticsSearch and Kibana containers. The Kibana GUI is optional:
 $ docker-compose up 
 ```
 
-##  Fetch Documents from Wikipedia
+## 📚  Fetch Documents from Wikipedia
 
 To retrieve the dataset:
 ```bash
 $ python ./src/dataset.py  
 ```
 
-## Index Data on Elasticsearch
+## 🗄️ Index Data on Elasticsearch
 
 Index the documents into Elasticsearch for efficient retrieval:
 
@@ -67,7 +67,7 @@ $ python ./src/indexing.py --text_sim <bm25|tfidf> --name_prefix <prefix> --data
   Number of overlapping characters between consecutive chunks.
 
 
-## RAG Inference
+## 🔎 RAG Inference
 
 Test the RAG system:
 ```bash
