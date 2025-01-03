@@ -57,7 +57,7 @@ def main():
     es = ES(conf)
     es.create_index()
 
-    docs = get_docs(conf["data_source"])[:30]
+    docs = get_docs(conf["data_source"])
     index_text(es, docs)
     
     embedders = conf["embedders"]

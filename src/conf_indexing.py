@@ -58,16 +58,15 @@ def parse():
     parser.add_argument('--data_source', help='the path of the data source directory')
     parser.add_argument('--embedders', nargs='+', help='the embedders for dense indexing')
     args = parser.parse_args()
+    
     if not args.text_sim or not args.name_prefix or not args.data_source :
         parser.error('please specify all the arguments')
     if args.text_sim not in ["bm25", "tfidf"]:
         parser.error('text_sim must be bm25 or tfidf')
-    #if args.embedders not in Vectorizer.AVAILABLE_MODELS.keys():
-    #    parser.error('embedders must be chosen from the available ones: ' + str(list(Vectorizer.AVAILABLE_MODELS.keys())))
     if args.embedders:
         invalid_embedders = [e for e in args.embedders if e not in Vectorizer.AVAILABLE_MODELS.keys()]
         if invalid_embedders:
-            parser.error('Invalid embedders: ' + ', '.join(invalid_embedders))
+            parser.error('Embedders must be chosen from the following list: ' + str(list(Vectorizer.AVAILABLE_MODELS.keys())))
     return args
 
 

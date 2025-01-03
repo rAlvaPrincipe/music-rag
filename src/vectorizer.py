@@ -1,13 +1,6 @@
-
-from transformers import pipeline
-from transformers import AutoTokenizer, AutoModel
-import torch
 from sentence_transformers import SentenceTransformer
 
-class Vectorizer():
-
-    #available_models = ["sbert/all-MiniLM-L6-v2"] 
-    
+class Vectorizer():    
     AVAILABLE_MODELS = {
         "sbert/all-MiniLM-L6-v2": {
             "label": "sbert",

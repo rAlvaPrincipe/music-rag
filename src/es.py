@@ -10,11 +10,9 @@ class ES:
         self.conf = conf
         
 
-
     def create_index(self):
         self.es.indices.create(index=self.INDEX, mappings=self.conf["es_conf"]["mappings"], settings=self.conf["es_conf"]["settings"])
         
-    
     
     def insert(self, source_doc_id, source_doc_title, source_url, chunk_text):  
         doc = dict()
