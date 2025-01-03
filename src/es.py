@@ -8,13 +8,11 @@ class ES:
         self.es = Elasticsearch("http://localhost:9200")
         self.INDEX = conf["index_name"]        
         self.conf = conf
-
-        if not self.es.indices.exists(index=self.INDEX):
-            self.create_index()
+        
 
 
     def create_index(self):
-        self.es.indices.create(index=self.INDEX, mappings=self.conf["mappings"], settings=self.conf["settings"])
+        self.es.indices.create(index=self.INDEX, mappings=self.conf["es_conf"]["mappings"], settings=self.conf["es_conf"]["settings"])
         
     
     
