@@ -55,6 +55,7 @@ def main():
     args = parse()
     conf = build_conf(args)
     es = ES(conf)
+    es.create_index()
 
     docs = get_docs(conf["data_source"])[:30]
     index_text(es, docs)
