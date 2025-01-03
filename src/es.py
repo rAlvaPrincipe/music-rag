@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+import hashlib 
          
 class ES:
 
@@ -17,17 +18,23 @@ class ES:
         
     
     
-    def insert(self, source_doc_id, source_doc_title, source_url, chunk_text,  embedding):  
+    def insert(self, source_doc_id, source_doc_title, source_url, chunk_text):  
         doc = dict()
+        id = source_doc_id + "_" + hashlib.md5(chunk_text.encode('utf-8')).hexdigest()
         doc["source_id"] = source_doc_id
         doc["source_title"] = source_doc_title
         doc["source_url"] = source_url
         doc["text"] = chunk_text
-        doc["embedding"] = embedding
-        resp = self.es.index(index=self.INDEX, document=doc)
+
+        resp = self.es.index(index=self.INDEX, id=id, document=doc)
     
     
-    
+    def update_embedding(self, id, embedding_field, embedding):
+        update_query = {
+            "doc": { embedding_field: embedding }
+        }
+        self.es.update(index=self.INDEX, id=id, body=update_query)
+
     
     def get_rag_contex_only_embeddings(self, question_vector):
         query = {
