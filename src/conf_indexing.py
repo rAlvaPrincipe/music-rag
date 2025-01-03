@@ -5,6 +5,8 @@ import os
 import hashlib
 import time
 from datetime import datetime
+from vectorizer import Vectorizer
+
 
 SCRIPTED_TFIDF = {
     "type": "scripted",
@@ -37,11 +39,10 @@ def build_settings_mappings(conf):
         settings["similarity"] = {"scripted_tfidf": SCRIPTED_TFIDF}
         mappings["properties"]["text"] = {"type": "text", "analyzer": "english", "similarity": "scripted_tfidf"}
 
-    dense_embeddings = conf.get("dense_embeddings", [])
-    for embedding in dense_embeddings:
-        embedder = embedding.get("embedder")
-        if embedder:
-            mappings["properties"][embedder] = {"type": "dense_vector", "dims": 384, "index": True, "similarity": "cosine"}
+    embedders = conf.get("embedders", [])
+    for embedder in embedders:
+        dims = Vectorizer.AVAILABLE_MODELS[embedder]["dims"]
+        mappings["properties"][embedder] = {"type": "dense_vector", "dims": dims, "index": True, "similarity": "cosine"}
 
     return settings, mappings
 
@@ -54,9 +55,19 @@ def parse():
     parser = argparse.ArgumentParser(description="Indexing", allow_abbrev=False)
     parser.add_argument('--text_sim', help='bm25 or tfidf')
     parser.add_argument('--index_name', help='index name')
+    parser.add_argument('--data_source', help='the path of the data source directory')
+    parser.add_argument('--embedders', nargs='+', help='the embedders for dense indexing')
     args = parser.parse_args()
-    if not args.text_sim  :
-        parser.error('please specify the similarity scoring')
+    if not args.text_sim or not args.index_name or not args.data_source :
+        parser.error('please specify all the arguments')
+    if args.text_sim not in ["bm25", "tfidf"]:
+        parser.error('text_sim must be bm25 or tfidf')
+    #if args.embedders not in Vectorizer.AVAILABLE_MODELS.keys():
+    #    parser.error('embedders must be chosen from the available ones: ' + str(list(Vectorizer.AVAILABLE_MODELS.keys())))
+    if args.embedders:
+        invalid_embedders = [e for e in args.embedders if e not in Vectorizer.AVAILABLE_MODELS.keys()]
+        if invalid_embedders:
+            parser.error('Invalid embedders: ' + ', '.join(invalid_embedders))
     return args
 
 
@@ -70,6 +81,9 @@ def personalize(args):
     conf = {}
     conf["text_sim"] = args.text_sim
     conf["index_name"] = args.index_name
+    conf["data_source"] = args.data_source
+    conf["embedders"] = args.embedders or [] 
+    
     conf["time"] = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
     conf["version"] = hashlib.sha256(str(time.time()).encode()).hexdigest()[:4]
     
