@@ -54,11 +54,11 @@ def build_settings_mappings(conf):
 def parse():
     parser = argparse.ArgumentParser(description="Indexing", allow_abbrev=False)
     parser.add_argument('--text_sim', help='bm25 or tfidf')
-    parser.add_argument('--index_name', help='index name')
+    parser.add_argument('--name_prefix', help='prefix for the index name')
     parser.add_argument('--data_source', help='the path of the data source directory')
     parser.add_argument('--embedders', nargs='+', help='the embedders for dense indexing')
     args = parser.parse_args()
-    if not args.text_sim or not args.index_name or not args.data_source :
+    if not args.text_sim or not args.name_prefix or not args.data_source :
         parser.error('please specify all the arguments')
     if args.text_sim not in ["bm25", "tfidf"]:
         parser.error('text_sim must be bm25 or tfidf')
@@ -80,19 +80,14 @@ def build_conf(args):
 def personalize(args):
     conf = {}
     conf["text_sim"] = args.text_sim
-    conf["index_name"] = args.index_name
+    conf["index_name"] = args.name_prefix + "_" + hashlib.sha256(str(time.time()).encode()).hexdigest()[:4]
     conf["data_source"] = args.data_source
     conf["embedders"] = args.embedders or [] 
-    
     conf["time"] = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-    conf["version"] = hashlib.sha256(str(time.time()).encode()).hexdigest()[:4]
-    
+    conf["output_dir"] = "indexes/" + conf["index_name"]
     settings, mappings = build_settings_mappings(conf)
-    conf["settings"] = settings
-    conf["mappings"]  = mappings
-
-    output_dir = "indexes/" + conf["index_name"].replace("/","-")  + "/"+ conf["text_sim"] + "__" +  conf["version"]
-    conf["output_dir"] = output_dir
+    conf["es_conf"] = {"settings": settings, "mappings": mappings}
+    
     print(conf["output_dir"])
     return conf
 
