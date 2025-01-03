@@ -48,7 +48,8 @@ def index_embeddings(es, docs, embedder_model):
             for chunk, embedding in zip(chunks, embeddings):
                 id = doc["page_id"] + "_" + hashlib.md5(chunk.encode('utf-8')).hexdigest()
                 es.update_embedding(id, embedder_model, embedding)
-                pbar.update(1)
+            
+            pbar.update(1)
 
 
 def main():
