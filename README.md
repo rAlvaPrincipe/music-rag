@@ -28,6 +28,7 @@ Set up ElasticsSearch and Kibana containers. The Kibana GUI is optional:
 ```bash
 $ docker-compose up 
 ```
+Kibana will be available at http://localhost:5601/app/home#/.
 
 ## 📚  Fetch Documents from Wikipedia
 
@@ -48,8 +49,8 @@ $ python ./src/indexing.py --text_sim <bm25|tfidf> --name_prefix <prefix> --data
 
 - **`--text_sim`** (required):  
   Select the similarity metric for text-based search:  
-  - `bm25`: Use BM25 similarity.  
-  - `tfidf`: Use a custom TF-IDF similarity with a scripted implementation.
+  - `bm25`: Use BM25.  
+  - `tfidf`: Use a custom TF-IDF with a scripted implementation.
 
 - **`--name_prefix`** (required):  
   Specify a prefix for the Elasticsearch index name.
@@ -66,6 +67,7 @@ $ python ./src/indexing.py --text_sim <bm25|tfidf> --name_prefix <prefix> --data
 - **`--chunk_overlap`** (optional, default: `50`):  
   Number of overlapping characters between consecutive chunks.
 
+Indexing configurations will be saved in the ./indexes folder.
 
 ## 🔎 RAG Inference
 
