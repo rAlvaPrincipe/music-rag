@@ -1,30 +1,21 @@
 from elasticsearch import Elasticsearch
-from datetime import datetime
-from pprint import pprint
-
-
+         
 class ES:
+
     
-    def __init__(self):
+    def __init__(self, conf):
         self.es = Elasticsearch("http://localhost:9200")
-        self.INDEX = "wiki_chunks"
-        
+        self.INDEX = conf["index_name"]        
+        self.conf = conf
+
         if not self.es.indices.exists(index=self.INDEX):
-            mappings = {
-                "properties": {
-                    "source_id": {"type": "text", "analyzer": "standard"},
-                    "source_title": {"type": "text", "analyzer": "standard"},
-                    "source_url": {"type": "text", "analyzer": "standard"},
-                    "text": {"type": "text", "analyzer": "english"},
-                    "embedding": {"type": "dense_vector", "dims": 384, "index": True, "similarity": "cosine"}
-                    }
-                }
-            self.create_index(mappings, self.INDEX)
+            self.create_index()
 
 
-    def create_index(self, mappings, index_name):
-        self.es.indices.create(index=index_name, mappings=mappings)
+    def create_index(self):
+        self.es.indices.create(index=self.INDEX, mappings=self.conf["mappings"], settings=self.conf["settings"])
         
+    
     
     def insert(self, source_doc_id, source_doc_title, source_url, chunk_text,  embedding):  
         doc = dict()
@@ -51,7 +42,7 @@ class ES:
             }
         }
 
-        resp = self.es.search(index="wiki_chunks", body=query)
+        resp = self.es.search(index=self.INDEX, body=query)
     
     
     

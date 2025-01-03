@@ -4,6 +4,8 @@ import json
 from vectorizer import Vectorizer
 from es import ES
 from tqdm import tqdm
+from conf_indexing import parse, build_conf
+
 
 def get_docs(source_path):
     docs = []
@@ -28,11 +30,16 @@ def doc2chunks(doc_text):
 
 
 def main():
+    args = parse()
+    conf = build_conf(args)
+    
     source_path = "./data/english_alternative_rock_groups"
     docs = get_docs(source_path)
     
     vectorizer = Vectorizer("sentence-transformers/all-MiniLM-L6-v2")
-    es = ES()
+    es = ES(conf)
+    
+    #TODO gestisci zero o molteplici vectorizers
     
     with tqdm(total=len(docs)) as pbar:
         for doc in docs:
