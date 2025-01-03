@@ -5,7 +5,7 @@ class ES:
 
     
     def __init__(self, conf):
-        self.es = Elasticsearch("http://localhost:9200")
+        self.es = Elasticsearch("http://localhost:9200", timeout= 600)
         self.INDEX = conf["index_name"]        
         self.conf = conf
         
