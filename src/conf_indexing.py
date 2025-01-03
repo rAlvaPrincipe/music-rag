@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 from vectorizer import Vectorizer
 
-
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html
 SCRIPTED_TFIDF = {
     "type": "scripted",
     "weight_script": {
@@ -57,9 +57,11 @@ def parse():
     parser.add_argument('--name_prefix', help='prefix for the index name')
     parser.add_argument('--data_source', help='the path of the data source directory')
     parser.add_argument('--embedders', nargs='+', help='the embedders for dense indexing')
+    parser.add_argument('--chunk_size', default= 500, help='chunk size')
+    parser.add_argument('--chunk_overlap', default=50, help='chunk overlapping size')
     args = parser.parse_args()
     
-    if not args.text_sim or not args.name_prefix or not args.data_source :
+    if not args.text_sim or not args.name_prefix or not args.data_source or not args.chunk_size or not args.chunk_overlap:
         parser.error('please specify all the arguments')
     if args.text_sim not in ["bm25", "tfidf"]:
         parser.error('text_sim must be bm25 or tfidf')
@@ -82,6 +84,8 @@ def personalize(args):
     conf["index_name"] = args.name_prefix + "_" + hashlib.sha256(str(time.time()).encode()).hexdigest()[:4]
     conf["data_source"] = args.data_source
     conf["embedders"] = args.embedders or [] 
+    conf["chunk_size"] = int(args.chunk_size)
+    conf["chunk_overlap"] = int(args.chunk_overlap)
     conf["time"] = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
     conf["output_dir"] = "indexes/" + conf["index_name"]
     settings, mappings = build_settings_mappings(conf)
