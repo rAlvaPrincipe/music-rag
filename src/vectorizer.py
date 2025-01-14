@@ -1,16 +1,19 @@
 from sentence_transformers import SentenceTransformer
 
+# https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 class Vectorizer():    
     AVAILABLE_MODELS = {
         "sbert/all-MiniLM-L6-v2": {
             "label": "sbert",
             "id": "sentence-transformers/all-MiniLM-L6-v2",
-            "dims": 384
+            "dims": 384,
+            "max_input_length": 256
         },
         "sbert/all-mpnet-base-v2": {
             "label": "sbert",
             "id": "sentence-transformers/all-mpnet-base-v2",
-            "dims": 768
+            "dims": 768,
+            "max_input_length": 384
         }
     }
     
