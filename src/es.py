@@ -49,13 +49,13 @@ class ES:
     
     
     
-    def get_rag_contex(self, question_vector):
+    def get_rag_contex(self, question_vector, embedder_name):
         fields = ["source_title", "text"]
 
         es_query = {
             "size": 15,
             "knn": {  # k-NN is a top-level query
-                "field": "embedding",
+                "field": embedder_name,
                 "query_vector": question_vector,
                 "k": 15,
                 "num_candidates": 200
