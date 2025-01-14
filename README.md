@@ -69,9 +69,29 @@ $ python ./src/indexing.py --text_sim <bm25|tfidf> --name_prefix <prefix> --data
 
 Indexing configurations will be saved in the ./indexes folder.
 
+
 ## 🔎 RAG Inference
 
-Test the RAG system:
+Run the RAG system:
 ```bash
-$ python ./src/rag.py  
+$ python ./src/rag.py --index_name <index_name> --question <question> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no>
 ```
+
+### Parameters
+
+- **`--index_name`** (required):  
+  The name of the Elasticsearch index to use for retrieval.
+
+- **`--question`** (required):  
+  The music-related question you want to ask.
+
+- **`--embedder`** (required):  
+  Specifies the embedding model for encoding the question and retrieving relevant chunks. It must match one of the models used during corpus vectorization.
+
+- **`--retrieval_mode`** (required):  
+  The retrieval strategy to use:  
+  - `dense`: Retrieval using dense embeddings only.  
+  - `hybrid`: Combines dense embeddings and named entity recognition (NER) for retrieval.
+
+- **`--include_metadata`** (required):  
+  Specify `yes` to include metadata (e.g., `{score: 9.47, source_title: Radiohead, text: ...}`) with each chunk presented to the LLM, or `no` to provide only the plain chunk text.
