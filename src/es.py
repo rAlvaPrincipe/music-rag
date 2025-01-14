@@ -32,27 +32,25 @@ class ES:
         self.es.update(index=self.INDEX, id=id, body=update_query)
 
     
-    def get_rag_contex_only_embeddings(self, question_vector):
+    def get_rag_contex_only_embeddings(self, question_vector,embedder_name,include_metadata):
+        fields = ["source_title", "text"]
+        
         query = {
             "knn": {
-            "field": "embedding",
-            "inner_hits": {
-                "_source": False,
-                "fields": ["text"]
-            },
-            "query_vector": question_vector,
-            "k": 5,
+                "field": embedder_name,
+                "query_vector": question_vector,
+                "k": 15,
+                "num_candidates": 200
             }
         }
-
-        resp = self.es.search(index=self.INDEX, body=query)
+        results = self.es.search(index=self.INDEX, body=query, _source_includes=fields)
+        return self.format_output(results, fields, include_metadata) 
     
     
-    
-    def get_rag_contex(self, question_vector, embedder_name):
+    def get_rag_contex(self, question_vector, embedder_name, entities, include_metadata):
         fields = ["source_title", "text"]
 
-        es_query = {
+        query = {
             "size": 15,
             "knn": {  # k-NN is a top-level query
                 "field": embedder_name,
@@ -66,7 +64,7 @@ class ES:
                         {
                             "match": {
                                 "text": {
-                                    "query": "Pink Floyd",
+                                    "query": entities[0],
                                     "fuzziness": "AUTO",
                                     "boost": 1.3
                                 }
@@ -76,20 +74,28 @@ class ES:
                 }
             }
         }
-
         
+        results = self.es.search(index=self.INDEX, body=query, _source_includes=fields)
+        return self.format_output(results, fields, include_metadata)
 
-        results = self.es.search(index=self.INDEX, body=es_query, _source_includes=fields)
+
+    def format_output(self, results, fields, include_metadata):
         results = results["hits"]["hits"]  
         
         outs = list()
         for result in results:
-            out = { "score": result["_score"]}
-            for field in fields:
-                out[field] = result["_source"][field]
+            if include_metadata:
+                out = { "score": result["_score"]}
+                for field in fields:
+                    out[field] = result["_source"][field]
+            else:
+                out = result["_source"]["text"]
             outs.append(out)
-        return outs          
+        return outs         
 
 
+# TODO:
+#- in alcuni casi vale la pena filtrare prima sulla pagina del musicista e poi fare la ricerca dentro
+#- quatno pesare titolo/entità/embedding?
 # da provare: filtra prima quelli che contengon pink floyd, su questo sottoinsieme fai la knn
 #             cerca solo nella pagina di pink floyd
