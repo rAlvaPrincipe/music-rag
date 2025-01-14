@@ -8,6 +8,7 @@ from vectorizer import Vectorizer
 from es import ES
 from langchain_core.prompts import ChatPromptTemplate
 from conf_rag import parse, build_conf
+from ner import NER
 import sys
 
 class Rag():
@@ -23,10 +24,14 @@ class Rag():
         self.conf = conf
         self.embedder = conf["embedder"]
         self.question = conf["question"]
+        self.mode = conf["retrieval_mode"]
+        self.include_metadata = conf["include_metadata"]
+        
         
         with open("indexes/" + conf["index_name"] + "/conf.json" , 'r', encoding='utf-8') as file:
             conf_indexing = json.load(file) 
         
+        self.ner = NER()
         self.es = ES(conf_indexing)
         self.vectorizer  = Vectorizer(self.embedder)
         self.groq_model = ChatGroq(
@@ -47,16 +52,19 @@ class Rag():
         
 
     def run_inference(self):
-        #question = "Who was influenced by Pink Floyd?"
-        #question = "Who influenced Pink Floyd?"
         question_embedding = self.vectorizer.get_embeddings(self.question)
-        context = self.es.get_rag_contex(question_embedding, self.conf["embedder"])
+        if self.mode == "dense":
+            context = self.es.get_rag_contex_only_embeddings(question_embedding, self.conf["embedder"], self.include_metadata)
+        else:
+            entities = self.ner.get_entities(self.question)
+            context = self.es.get_rag_contex(question_embedding, self.conf["embedder"], entities, self.include_metadata)
+    
         chain = self.template | self.groq_model
         answer = chain.invoke({"context": context, "question": self.question})
-
         full_prompt = self.template.format(question=self.question, context=context)
-        print(full_prompt)
-        print(answer.content)
+        
+        return answer.content, full_prompt, context
+
 
 
 
@@ -64,10 +72,22 @@ class Rag():
 def main():
     args = parse()
     conf = build_conf(args)
-        
+    
     rag = Rag(conf)
-    rag.run_inference()
+    answer, full_prompt, context = rag.run_inference()
+    
+    
+    print()
+    for el in context:
+        if isinstance(el, str):
+            print(el+ "\n----------------------------------------- \n")
+        else:
+            print("score: " + str(el["score"]) + "  " + "page: " + el["source_title"])
+            print(el["text"]+ "\n")
         
+    print()
+    print(answer)
+    
     
 
 
@@ -75,3 +95,6 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+# TODO
+#- il prompt template non mi sembra ottimale: il contesto lo spara come un array e avolte non si capisce la fine e l'inizio di uno.
