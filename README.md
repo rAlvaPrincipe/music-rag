@@ -34,7 +34,7 @@ Kibana will be available at http://localhost:5601/app/home#/.
 
 To retrieve the dataset:
 ```bash
-$ python ./src/dataset.py  
+$ python ./src/corpus_fetcher.py  
 ```
 
 ## 🗄️ Index Data on Elasticsearch
