@@ -9,6 +9,7 @@ from es import ES
 from langchain_core.prompts import ChatPromptTemplate
 from conf_rag import parse, build_conf
 from ner import NER
+from dataset import get_dataset
 import sys
 
 class Rag():
@@ -23,10 +24,8 @@ class Rag():
     def __init__(self, conf):
         self.conf = conf
         self.embedder = conf["embedder"]
-        self.question = conf["question"]
         self.mode = conf["retrieval_mode"]
         self.include_metadata = conf["include_metadata"]
-        
         
         with open("indexes/" + conf["index_name"] + "/conf.json" , 'r', encoding='utf-8') as file:
             conf_indexing = json.load(file) 
@@ -47,21 +46,31 @@ class Rag():
         ])
 
 
+
+
     def run_validation(self):
-        3
+        dataset = get_dataset(self.conf["dataset"])
+        for item in dataset:
+            question = item["q"]
+            gt = item["a"]
+            
+            answer, full_prompt, context = self.run_inference(question)        
+            print(answer)
+            
         
 
-    def run_inference(self):
-        question_embedding = self.vectorizer.get_embeddings(self.question)
+
+    def run_inference(self, question):
+        question_embedding = self.vectorizer.get_embeddings(question)
         if self.mode == "dense":
             context = self.es.get_rag_contex_only_embeddings(question_embedding, self.conf["embedder"], self.include_metadata)
         else:
-            entities = self.ner.get_entities(self.question)
+            entities = self.ner.get_entities(question)
             context = self.es.get_rag_contex(question_embedding, self.conf["embedder"], entities, self.include_metadata)
     
         chain = self.template | self.groq_model
-        answer = chain.invoke({"context": context, "question": self.question})
-        full_prompt = self.template.format(question=self.question, context=context)
+        answer = chain.invoke({"context": context, "question": question})
+        full_prompt = self.template.format(question=question, context=context)
         
         return answer.content, full_prompt, context
 
@@ -74,21 +83,20 @@ def main():
     conf = build_conf(args)
     
     rag = Rag(conf)
-    answer, full_prompt, context = rag.run_inference()
-    
-    
-    print()
-    for el in context:
-        if isinstance(el, str):
-            print(el+ "\n----------------------------------------- \n")
-        else:
-            print("score: " + str(el["score"]) + "  " + "page: " + el["source_title"])
-            print(el["text"]+ "\n")
+    if conf["mode"] == "inference":
+        question = conf["question"]
+        answer, full_prompt, context = rag.run_inference(question)
         
-    print()
-    print(answer)
-    
-    
+        for el in context:
+            if isinstance(el, str):
+                print(el+ "\n----------------------------------------- \n")
+            else:
+                print("score: " + str(el["score"]) + "  " + "page: " + el["source_title"])
+                print(el["text"]+ "\n")    
+        print("\n" + answer)
+    else:
+        rag.run_validation()
+        
 
 
 
