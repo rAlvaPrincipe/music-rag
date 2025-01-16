@@ -10,16 +10,10 @@ from langchain_core.prompts import ChatPromptTemplate
 from conf_rag import parse, build_conf
 from ner import NER
 from dataset import get_dataset
+import llms
 import sys
 
 class Rag():
-
-
-    with open(os.path.join("apikeys.json"), "r", encoding="utf-8") as f:
-        keys = json.load(f) 
-
-    os.environ["GROQ_API_KEY"] = keys["groq"]
-
 
     def __init__(self, conf):
         self.conf = conf
@@ -33,10 +27,7 @@ class Rag():
         self.ner = NER()
         self.es = ES(conf_indexing)
         self.vectorizer  = Vectorizer(self.embedder)
-        self.groq_model = ChatGroq(
-            model="llama-3.1-70b-versatile",
-            temperature=0,
-        )
+        self.llm = llms.get_llm("groq", "llama-3.1-70b-versatile")
 
         self.template = ChatPromptTemplate([
             ('system',
@@ -68,7 +59,7 @@ class Rag():
             entities = self.ner.get_entities(question)
             context = self.es.get_rag_contex(question_embedding, self.conf["embedder"], entities, self.include_metadata)
     
-        chain = self.template | self.groq_model
+        chain = self.template | self.llm
         answer = chain.invoke({"context": context, "question": question})
         full_prompt = self.template.format(question=question, context=context)
         
