@@ -70,28 +70,47 @@ $ python ./src/indexing.py --text_sim <bm25|tfidf> --name_prefix <prefix> --data
 Indexing configurations will be saved in the ./indexes folder.
 
 
-## 🔎 RAG Inference
+## 🔎 Running the RAG System  
 
-Run the RAG system:
+The RAG system supports two modes of operation:  
+- **Inference**: Ask music-related questions to retrieve relevant information.  
+- **Evaluation**: Evaluate the system on a dataset of questions and answers.  
+
+Use the following command:  
+
 ```bash
-$ python ./src/rag.py --index_name <index_name> --question <question> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no>
+$ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> [--question <question>] [--dataset <dataset_path>]
 ```
 
-### Parameters
+### Parameters  
 
-- **`--index_name`** (required):  
+- `--mode` (required):  
+  Specify the mode of operation:  
+  - `inference`: To ask a question.  
+  - `evaluation`: To evaluate the system on a dataset.
+
+- `--index_name` (required):  
   The name of the Elasticsearch index to use for retrieval.
 
-- **`--question`** (required):  
-  The music-related question you want to ask.
+- `--embedder` (required):  
+  Specifies the embedding model used for encoding.
 
-- **`--embedder`** (required):  
-  Specifies the embedding model for encoding the question and retrieving relevant chunks. It must match one of the models used during corpus vectorization.
-
-- **`--retrieval_mode`** (required):  
+- `--retrieval_mode` (required):  
   The retrieval strategy to use:  
   - `dense`: Retrieval using dense embeddings only.  
   - `hybrid`: Combines dense embeddings and named entity recognition (NER) for retrieval.
 
-- **`--include_metadata`** (required):  
-  Specify `yes` to include metadata (e.g., `{score: 9.47, source_title: Radiohead, text: ...}`) with each chunk presented to the LLM, or `no` to provide only the plain chunk text.
+- `--include_metadata` (required):  
+  Include metadata with chunks:  
+  - `yes`: Metadata is included (e.g., `{score: 9.47, source_title: Radiohead, text: ...}`).  
+  - `no`: Only plain text chunks are provided.
+
+#### Mode-Specific Parameters  
+
+- For `inference` mode:  
+  - `--question` (required):  
+    The music-related question you want to ask.
+
+- For `evaluation` mode:  
+  - `--dataset` (required):  
+    The dataset name containing questions and answers for evaluation.

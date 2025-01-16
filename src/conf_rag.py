@@ -2,22 +2,29 @@ import argparse
 
 
 def parse():
-    parser = argparse.ArgumentParser(description="Indexing", allow_abbrev=False)
-    parser.add_argument('--mode', help='evaluation or inference')
-    parser.add_argument('--index_name', help='the name of the eslasticsearch index')
-    parser.add_argument('--dataset', help='only for evaluation mode')
-    parser.add_argument('--question', help='only for inference mode')
-    parser.add_argument('--embedder', help='specifies the model used for embedding the question and retrieving chunks. It must match one of the models used to vectorize the corpus.')
-    parser.add_argument('--retrieval_mode', help='dense or hybrid')
-    parser.add_argument('--include_metadata', help='yes or no. Should each chunk presented to the LLM include metadata (e.g., {score: 9.47, source_title: Radiohead, text: ...}) or just the plain chunk text?')
+    parser = argparse.ArgumentParser(description="RAG Configuration", allow_abbrev=False)
+    
+    # Shared arguments
+    parser.add_argument('--mode', required=True, choices=['evaluation', 'inference'], help='Specify whether to run in evaluation or inference mode.')
+    parser.add_argument('--index_name', required=True, help='The name of the Elasticsearch index.')
+    parser.add_argument('--embedder', required=True, help='specifies the model used for embedding the question and retrieving chunks. It must match one of the models used to vectorize the corpus.')
+    parser.add_argument('--retrieval_mode', required=True, choices=['dense', 'hybrid'], help='Choose between dense or hybrid retrieval strategies.')
+    parser.add_argument('--include_metadata', required=True, choices=['yes', 'no'], help='Should each chunk presented to the LLM include metadata (e.g., {score: 9.47, source_title: Radiohead, text: ...}) or just the plain chunk text?')
 
-    args = parser.parse_args()
-    if args.mode == "evaluation":
-        if not args.index_name or not args.dataset or not args.embedder or not args.retrieval_mode or not args.include_metadata:
-            parser.error('please specify all the arguments for the evaluation mode')     
-    elif args.mode == "inference":
-        if not args.index_name or not args.question or not args.embedder or not args.retrieval_mode or not args.include_metadata:
-            parser.error('please specify all the arguments for the inference mode')
+    # Mode-specific arguments
+    parser.add_argument('--dataset', help='Path to the dataset (required for evaluation mode).')
+    parser.add_argument('--question', help='The question to ask (required for inference mode).')
+
+    args = parser.parse_args() 
+
+    # Validate mode-specific arguments
+    if args.mode == "evaluation" and not args.dataset:
+        parser.error('--dataset is required for evaluation mode.')
+    if args.mode == "inference" and not args.question:
+        parser.error('--question is required for inference mode.')
+
+    if not args.index_name or not args.embedder or not args.retrieval_mode or not args.include_metadata:
+        parser.error('please specify all the arguments.')     
     return args
 
 
