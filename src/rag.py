@@ -106,3 +106,4 @@ if __name__ == "__main__":
 
 # TODO
 #- il prompt template non mi sembra ottimale: il contesto lo spara come un array e avolte non si capisce la fine e l'inizio di uno.
+
