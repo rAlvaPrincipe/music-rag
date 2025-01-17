@@ -79,7 +79,7 @@ def main():
     rag = Rag(conf)
     if conf["mode"] == "inference":
         question = conf["question"]
-        answer, full_prompt, context = rag.run_inference(question)
+        answer, full_prompt, context = rag.inference(question)
         
         for el in context:
             if isinstance(el, str):
