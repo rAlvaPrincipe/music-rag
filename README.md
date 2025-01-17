@@ -79,7 +79,7 @@ The RAG system supports two modes of operation:
 Use the following command:  
 
 ```bash
-$ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> [--question <question>] [--dataset <dataset_path>]
+$ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> --llm_provider <llm_provider> --llm_model <llm_model> [--question <question>] [--dataset <dataset_path>]
 ```
 
 ### Parameters  
