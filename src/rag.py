@@ -5,9 +5,10 @@ from es import ES
 from langchain_core.prompts import ChatPromptTemplate
 from conf_rag import parse, build_conf
 from ner import NER
-from metrics import validate
 from dataset import get_dataset
 import llms
+from validator import Validator
+
 
 class Rag():
 
@@ -23,7 +24,8 @@ class Rag():
         self.ner = NER()
         self.es = ES(conf_indexing)
         self.vectorizer  = Vectorizer(self.embedder)
-        self.llm = llms.get_llm("groq", "llama-3.1-70b-versatile")
+        self.llm = llms.get_llm(conf["llm_provider"], conf["llm_model"])
+        self.validator = Validator(conf["llm_provider"], conf["llm_model"])
 
         self.template = ChatPromptTemplate([
             ('system',
@@ -50,7 +52,7 @@ class Rag():
             answers.append(answer)
             print(answer)
             
-        metrics = validate(questions, contexts, answers, ground_truths)
+        metrics = self.validator.validate(questions, contexts, answers, ground_truths)
         print(metrics)
             
         
