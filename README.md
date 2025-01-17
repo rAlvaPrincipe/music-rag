@@ -105,6 +105,12 @@ $ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> -
   - `yes`: Metadata is included (e.g., `{score: 9.47, source_title: Radiohead, text: ...}`).  
   - `no`: Only plain text chunks are provided.
 
+- `--llm_provider` (required):  
+  Specify the LLM service provider, such as `groq`, `aws`, `openai`.
+
+- `--llm_model` (required):  
+  Specify the LLM model to use, such as: `llama-3.1-70b-versatile`, `gpt-4-turbo`.
+
 #### Mode-Specific Parameters  
 
 - For `inference` mode:  
