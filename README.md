@@ -79,8 +79,9 @@ The RAG system supports two modes of operation:
 Use the following command:  
 
 ```bash
-$ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> --llm_provider <llm_provider> --llm_model <llm_model> [--question <question>] [--dataset <dataset_path>]
+$ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> --inf_llm_provider <llm_provider> --inf_llm_model <llm_model> [--question <question>] [--dataset <dataset_path>] [--eval_llm_provider <eval_llm_provider>] [--eval_llm_model <eval_llm_model>]
 ```
+
 
 ### Parameters  
 
@@ -105,11 +106,11 @@ $ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> -
   - `yes`: Metadata is included (e.g., `{score: 9.47, source_title: Radiohead, text: ...}`).  
   - `no`: Only plain text chunks are provided.
 
-- `--llm_provider` (required):  
-  Specify the LLM service provider, such as `groq`, `aws`, `openai`.
+- `--inf_llm_provider` (required):  
+  Specify the LLM service provider to use at inference time, such as `groq`, `aws`, `openai`.
 
-- `--llm_model` (required):  
-  Specify the LLM model to use, such as: `llama-3.1-70b-versatile`, `gpt-4-turbo`.
+- `--inf_llm_model` (required):  
+  Specify the LLM model to use at inference time, such as: `llama-3.1-70b-versatile`, `gpt-4-turbo`.
 
 #### Mode-Specific Parameters  
 
@@ -120,3 +121,9 @@ $ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> -
 - For `evaluation` mode:  
   - `--dataset` (required):  
     The dataset name containing questions and answers for evaluation.
+
+  - `--eval_llm_provider` (required):  
+  Specify the LLM service provider at evaluation time, such as `groq`, `aws`, `openai`.
+
+  - `--eval_llm_model` (required):  
+  Specify the LLM model to use at evaluation time, such as: `llama-3.1-70b-versatile`, `gpt-4-turbo`.
