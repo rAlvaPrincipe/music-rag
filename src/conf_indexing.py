@@ -57,7 +57,7 @@ def parse():
     parser.add_argument('--name_prefix', help='prefix for the index name')
     parser.add_argument('--data_source', help='the path of the data source directory')
     parser.add_argument('--embedders', nargs='+', help='the embedders for dense indexing')
-    parser.add_argument('--chunk_size', default= 500, help='chunk size')
+    parser.add_argument('--chunk_size', default= 300, help='chunk size')
     parser.add_argument('--chunk_overlap', default=50, help='chunk overlapping size')
     args = parser.parse_args()
     
