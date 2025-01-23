@@ -1,0 +1,8 @@
+groq_llama-3.1-70b-versatile___V6c44 | C-Recall: 0.333 | P-Ref: 0.224 | BLEU: 0.030 | R1: 0.221 | R2: 0.063 | RL: 0.171 | RLsum: 0.175 | METEOR: 0.291 | Correct: 1 | Incorrect: 2 | Partial: 1 
+groq_llama-3.1-70b-versatile___V6199 | C-Recall: 0.667 | P-Ref: 0.521 | BLEU: 0.065 | R1: 0.253 | R2: 0.117 | RL: 0.212 | RLsum: 0.212 | METEOR: 0.369 | Correct: 2 | Incorrect: 0 | Partial: 2 
+groq_llama-3.1-70b-versatile___Vf186 | C-Recall: 0.500 | P-Ref: 0.403 | BLEU: 0.071 | R1: 0.220 | R2: 0.114 | RL: 0.183 | RLsum: 0.183 | METEOR: 0.306 | Correct: 2 | Incorrect: 1 | Partial: 1 
+groq_llama-3.1-70b-versatile___V2abb | C-Recall: 0.417 | P-Ref: 0.252 | BLEU: 0.032 | R1: 0.242 | R2: 0.073 | RL: 0.193 | RLsum: 0.193 | METEOR: 0.295 | Correct: 1 | Incorrect: 2 | Partial: 1 
+openai_gpt-4o-mini___V67db           | C-Recall: 0.667 | P-Ref: 0.479 | BLEU: 0.131 | R1: 0.451 | R2: 0.303 | RL: 0.382 | RLsum: 0.387 | METEOR: 0.412 | Correct: 2 | Incorrect: 1 | Partial: 1 
+openai_gpt-4o-mini___Vde8b           | C-Recall: 0.375 | P-Ref: 0.224 | BLEU: 0.043 | R1: 0.217 | R2: 0.047 | RL: 0.189 | RLsum: 0.189 | METEOR: 0.184 | Correct: 1 | Incorrect: 2 | Partial: 1 
+openai_gpt-4o-mini___V14e8           | C-Recall: 0.333 | P-Ref: 0.252 | BLEU: 0.041 | R1: 0.216 | R2: 0.040 | RL: 0.177 | RLsum: 0.177 | METEOR: 0.169 | Correct: 1 | Incorrect: 2 | Partial: 1 
+openai_gpt-4o-mini___V1a5b           | C-Recall: 0.500 | P-Ref: 0.403 | BLEU: 0.113 | R1: 0.377 | R2: 0.293 | RL: 0.359 | RLsum: 0.343 | METEOR: 0.368 | Correct: 1 | Incorrect: 2 | Partial: 1 

@@ -1,0 +1,53 @@
+{
+    "text_sim": "bm25",
+    "index_name": "all_bands_7dcf",
+    "data_source": "./data/musical_groups_by_genre/",
+    "embedders": [
+        "sbert/all-mpnet-base-v2",
+        "sbert/all-MiniLM-L6-v2"
+    ],
+    "chunk_size": 300,
+    "chunk_overlap": 50,
+    "time": "24/01/2025_00:42:57",
+    "output_dir": "indexes/all_bands_7dcf",
+    "es_conf": {
+        "settings": {},
+        "mappings": {
+            "dynamic": "strict",
+            "properties": {
+                "source_id": {
+                    "type": "text",
+                    "analyzer": "standard",
+                    "similarity": "BM25"
+                },
+                "source_title": {
+                    "type": "text",
+                    "analyzer": "standard",
+                    "similarity": "BM25"
+                },
+                "source_url": {
+                    "type": "text",
+                    "analyzer": "standard",
+                    "similarity": "BM25"
+                },
+                "text": {
+                    "type": "text",
+                    "analyzer": "english",
+                    "similarity": "BM25"
+                },
+                "sbert/all-mpnet-base-v2": {
+                    "type": "dense_vector",
+                    "dims": 768,
+                    "index": true,
+                    "similarity": "cosine"
+                },
+                "sbert/all-MiniLM-L6-v2": {
+                    "type": "dense_vector",
+                    "dims": 384,
+                    "index": true,
+                    "similarity": "cosine"
+                }
+            }
+        }
+    }
+}

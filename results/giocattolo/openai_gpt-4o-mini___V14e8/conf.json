@@ -1,0 +1,21 @@
+{
+    "mode": "evaluation",
+    "index_name": "english_bands_041b",
+    "dataset": "giocattolo",
+    "embedder": "sbert/all-MiniLM-L6-v2",
+    "retrieval_mode": "hybrid",
+    "include_metadata": false,
+    "llm": {
+        "inference": {
+            "provider": "openai",
+            "model": "gpt-4o-mini"
+        },
+        "evaluation": {
+            "provider": "openai",
+            "model": "gpt-4o-mini"
+        }
+    },
+    "time": "24/01/2025_00:36:52",
+    "version": "14e8",
+    "output_dir": "results/giocattolo/openai_gpt-4o-mini___V14e8"
+}

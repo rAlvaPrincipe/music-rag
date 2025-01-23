@@ -1,0 +1,19 @@
+{
+    "ragas": {
+        "context_recall": 0.4167,
+        "llm_context_precision_with_reference": 0.2521
+    },
+    "bleu": 0.032245161543779995,
+    "rouge": {
+        "rouge1": 0.24186618735166832,
+        "rouge2": 0.07290662553820448,
+        "rougeL": 0.19294377355856485,
+        "rougeLsum": 0.19294377355856485
+    },
+    "meteor": 0.2945481908593762,
+    "llm-as-a-judge": {
+        "correct": 1,
+        "incorrect": 2,
+        "partially correct": 1
+    }
+}

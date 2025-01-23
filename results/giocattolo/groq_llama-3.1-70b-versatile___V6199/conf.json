@@ -1,0 +1,21 @@
+{
+    "mode": "evaluation",
+    "index_name": "english_bands_041b",
+    "dataset": "giocattolo",
+    "embedder": "sbert/all-mpnet-base-v2",
+    "retrieval_mode": "dense",
+    "include_metadata": false,
+    "llm": {
+        "inference": {
+            "provider": "groq",
+            "model": "llama-3.1-70b-versatile"
+        },
+        "evaluation": {
+            "provider": "openai",
+            "model": "gpt-4o-mini"
+        }
+    },
+    "time": "24/01/2025_00:29:57",
+    "version": "6199",
+    "output_dir": "results/giocattolo/groq_llama-3.1-70b-versatile___V6199"
+}
