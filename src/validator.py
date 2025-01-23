@@ -89,6 +89,7 @@ class Validator:
         return metrics
     
     
+    
     def save_metrics(self, metrics, output_f):
         output_dir = Path(output_f).parent.absolute()
         if not os.path.exists(output_dir): 
@@ -96,6 +97,18 @@ class Validator:
             
         with open(output_f, "w", encoding='utf-8') as json_file:
             json.dump(metrics, json_file, indent=4)
+            
+            
+        id = os.path.basename(os.path.dirname(output_f))  
+        dataset_name = os.path.basename(os.path.dirname(os.path.dirname(output_f))) 
+        one_line_metrics = self.format_metrics_json2txt(id, metrics)
+       
+        file_path = "./results_summary/" + dataset_name + "/metrics.txt"
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, "a") as file:
+            file.write(one_line_metrics)
+            
+
         
     
     def save_requests_responses(self, content, output_dir, f_name):
@@ -108,3 +121,18 @@ class Validator:
         else:
             with open(output_dir + "/" + f_name, "w", encoding='utf-8') as text_file:
                 text_file.write(content)
+            
+
+                
+
+
+    def format_metrics_json2txt(self, id, metrics):
+        return (
+            f"{id} | C-Recall: {metrics['ragas']['context_recall']:.3f} | "
+            f"P-Ref: {metrics['ragas']['llm_context_precision_with_reference']:.3f} | "
+            f"BLEU: {metrics['bleu']:.3f} | R1: {metrics['rouge']['rouge1']:.3f} | "
+            f"R2: {metrics['rouge']['rouge2']:.3f} | RL: {metrics['rouge']['rougeL']:.3f} | "
+            f"RLsum: {metrics['rouge']['rougeLsum']:.3f} | METEOR: {metrics['meteor']:.3f} | "
+            f"Correct: {metrics['llm-as-a-judge']['correct']} | Incorrect: {metrics['llm-as-a-judge']['incorrect']} | "
+            f"Partial: {metrics['llm-as-a-judge']['partially correct']} \n"
+        )
