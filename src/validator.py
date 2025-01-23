@@ -6,6 +6,10 @@ from tqdm import tqdm
 import llms
 from ragas import evaluate  as ragas_evaluate
 import evaluate as hf_evaluate
+import os
+import json
+from pathlib import Path
+
 
 class Validator:
     
@@ -78,8 +82,29 @@ class Validator:
         dataset = self.create_ragas_dataset(questions, contexts, answers, ground_truths)
         
         metrics = {}
-        metrics.update({'ragas': str(self.ragas_evaluation(dataset))})
+        metrics.update({'ragas': eval(str(self.ragas_evaluation(dataset)))})
         metrics.update(self.generation_evaluation(answers, ground_truths))
         metrics.update(self.llm_as_a_judge(questions, answers, ground_truths))
-        
+
         return metrics
+    
+    
+    def save_metrics(self, metrics, output_f):
+        output_dir = Path(output_f).parent.absolute()
+        if not os.path.exists(output_dir): 
+            os.makedirs(output_dir) 
+            
+        with open(output_f, "w", encoding='utf-8') as json_file:
+            json.dump(metrics, json_file, indent=4)
+        
+    
+    def save_requests_responses(self, content, output_dir, f_name):
+        if not os.path.exists(output_dir): 
+            os.makedirs(output_dir) 
+        
+        if "json" in f_name:
+            with open(output_dir + "/" + f_name, "w", encoding='utf-8') as json_file:
+                json.dump(content, json_file, indent=4)
+        else:
+            with open(output_dir + "/" + f_name, "w", encoding='utf-8') as text_file:
+                text_file.write(content)

@@ -1,4 +1,16 @@
 import argparse
+from pathlib import Path
+import json
+import os
+from datetime import datetime
+import hashlib
+import time
+
+
+def build_output_file_path(conf):
+    output_dir = "results/" + conf["dataset"] + "/" + conf["llm_provider"] + "_" + conf["llm_model"].replace(":", "_").replace("/", "_") + "_"
+    output_dir += "__V" + conf["version"]
+    return output_dir     
 
 
 def parse():
@@ -48,8 +60,29 @@ def personalize(args):
     conf["include_metadata"] = True if args.include_metadata.lower() == "yes" else False
     conf["llm_provider"] = args.llm_provider
     conf["llm_model"] = args.llm_model
+    
+    if conf["mode"] == "evaluation":
+        conf["time"] = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        conf["version"] = hashlib.sha256(str(time.time()).encode()).hexdigest()[:4]
+        conf["output_dir"] = build_output_file_path(conf)
+        print(conf["output_dir"])
     return conf
 
 
 
 
+def save(conf):
+    f_out = conf["output_dir"] + "/conf.json"
+    Path(os.path.dirname(f_out)).mkdir(parents=True, exist_ok=True)
+    with open(f_out, 'w') as fp:
+        json.dump(conf, fp, indent=4)
+        
+
+
+def build_conf_from_args():
+    args = parse()
+    conf = personalize(args)
+    if conf["mode"] == "evaluation":
+        save(conf)
+    return conf
+    

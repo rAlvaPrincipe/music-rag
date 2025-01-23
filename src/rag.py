@@ -3,7 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from vectorizer import Vectorizer
 from es import ES
 from langchain_core.prompts import ChatPromptTemplate
-from conf_rag import parse, build_conf
+from conf_rag import build_conf_from_args
 from ner import NER
 from dataset import get_dataset
 import llms
@@ -42,18 +42,27 @@ class Rag():
         
         questions, contexts, answers, ground_truths = [], [], [], []
         for item in dataset:
-            question = item["q"]
-            gt = item["a"]
-            answer, full_prompt, context = self.inference(question)     
+            id = item["id"]
+            q = item["q"]
+            gt= item["a"]
+            answer, full_prompt, context = self.inference(q)     
    
-            questions.append(question)
+            questions.append(q)
             ground_truths.append(gt)
             contexts.append(context)
             answers.append(answer)
             print(answer)
             
+            
+            self.validator.save_requests_responses(full_prompt, self.conf["output_dir"] + "/logs/" + id, "full_prompt.txt")
+            self.validator.save_requests_responses(item, self.conf["output_dir"] + "/logs/" + id, "gt.json")
+            self.validator.save_requests_responses(context, self.conf["output_dir"] + "/logs/" + id, "context.json")
+            self.validator.save_requests_responses(answer, self.conf["output_dir"] + "/logs/" + id, "answer.txt")
+
         metrics = self.validator.validate(questions, contexts, answers, ground_truths)
+        self.validator.save_metrics(metrics, self.conf["output_dir"] + "/metrics.json")
         print(metrics)
+        
             
         
 
@@ -75,8 +84,7 @@ class Rag():
 
 
 def main():
-    args = parse()
-    conf = build_conf(args)
+    conf = build_conf_from_args()
     
     rag = Rag(conf)
     if conf["mode"] == "inference":
