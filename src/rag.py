@@ -24,8 +24,8 @@ class Rag():
         self.ner = NER()
         self.es = ES(conf_indexing)
         self.vectorizer  = Vectorizer(self.embedder)
-        self.llm = llms.get_llm(conf["llm_provider"], conf["llm_model"])
-        self.validator = Validator(conf["llm_provider"], conf["llm_model"])
+        self.llm = llms.get_llm(conf["llm"]["inference"]["provider"], conf["llm"]["inference"]["model"])
+        self.validator = Validator(conf["llm"]["evaluation"]["provider"], conf["llm"]["evaluation"]["model"])
 
         self.template = ChatPromptTemplate([
             ('system',
