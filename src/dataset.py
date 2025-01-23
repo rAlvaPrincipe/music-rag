@@ -1,3 +1,5 @@
+import hashlib
+
 def get_dataset(name):
     if name == "giocattolo":
         return dataset_giocattolo()
@@ -17,5 +19,9 @@ def dataset_giocattolo():
   #      {"q": "Which band is known for its rivalry with Blur?", 
   #       "a": "Blur and Oasis had a famous rivalry in the 1990s Britpop scene. Blur's eclectic sound clashed with Oasis's anthemic rock, peaking in 1995 when Oasis's *Morning Glory* outsold Blur's *The Great Escape*."}
     ]
+    
+    for item in domande_risposta:
+        item["id"] = hashlib.md5(item["q"].encode()).hexdigest()
+    
 
     return domande_risposta
