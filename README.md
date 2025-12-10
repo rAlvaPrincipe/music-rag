@@ -30,6 +30,8 @@ $ docker-compose up
 ```
 Kibana will be available at http://localhost:5601/app/home#/.
 
+Set your apykeys in apikeys.json
+
 ## 📚  Fetch Documents from Wikipedia
 
 To retrieve the dataset:
@@ -43,6 +45,12 @@ Index the documents into Elasticsearch for efficient retrieval:
 
 ```bash
 $ python ./src/indexing.py --text_sim <bm25|tfidf> --name_prefix <prefix> --data_source <path> --embedders <emb1 emb2 ...>
+```
+
+Example:
+
+```bash
+$ python ./src/indexing.py --text_sim bm25 --name_prefix ai2025 --data_source ./data/musical_groups_by_genre --embedders sbert/all-mpnet-base-v2
 ```
 
 ### Parameters
@@ -79,9 +87,13 @@ The RAG system supports two modes of operation:
 Use the following command:  
 
 ```bash
-$ python ./src/conf.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> --inf_llm_provider <llm_provider> --inf_llm_model <llm_model> [--question <question>] [--dataset <dataset_path>] [--eval_llm_provider <eval_llm_provider>] [--eval_llm_model <eval_llm_model>]
+$ python ./src/rag.py --mode <inference|evaluation> --index_name <index_name> --embedder <embedder_model> --retrieval_mode <dense|hybrid> --include_metadata <yes|no> --inf_llm_provider <llm_provider> --inf_llm_model <llm_model> [--question <question>] [--dataset <dataset_path>] [--eval_llm_provider <eval_llm_provider>] [--eval_llm_model <eval_llm_model>]
 ```
 
+Example:
+```bash
+python ./src/rag.py --mode inference  --index_name ai2025_2e79 --embedder sbert/all-mpnet-base-v2 --retrieval_mode dense --include_metadata yes --inf_llm_provider openai --inf_llm_model gpt-4o-mini --question "Did Pink Floyd influence Radiohead?"
+```
 
 ### Parameters  
 
