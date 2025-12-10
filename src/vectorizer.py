@@ -1,4 +1,5 @@
 from sentence_transformers import SentenceTransformer
+import torch
 
 # https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 class Vectorizer():    
@@ -20,8 +21,11 @@ class Vectorizer():
     
     def __init__(self, model):            
         if model in self.AVAILABLE_MODELS.keys():
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            print(device)
+
             if "sbert" in model:
-                self.model = SentenceTransformer(self.AVAILABLE_MODELS[model]["id"])
+                self.model = SentenceTransformer(self.AVAILABLE_MODELS[model]["id"], device=device)
         else:
             raise Exception("model not available")
             
