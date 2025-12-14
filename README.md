@@ -94,6 +94,7 @@ Example:
 ```bash
 python ./src/rag.py --mode inference  --index_name ai2025_2e79 --embedder sbert/all-mpnet-base-v2 --retrieval_mode dense --include_metadata yes --inf_llm_provider openai --inf_llm_model gpt-4o-mini --question "Did Pink Floyd influence Radiohead?"
 ```
+(for more examples check queries.sh)
 
 ### Parameters  
 
@@ -112,6 +113,8 @@ python ./src/rag.py --mode inference  --index_name ai2025_2e79 --embedder sbert/
   The retrieval strategy to use:  
   - `dense`: Retrieval using dense embeddings only.  
   - `hybrid`: Combines dense embeddings and named entity recognition (NER) for retrieval.
+  - `dense_plus_kg`: dense mode + entity subgraph context from KG
+  - `hybrid_plus_kg`: hybrid + entity subgraph context from KG
 
 - `--include_metadata` (required):  
   Include metadata with chunks:  
